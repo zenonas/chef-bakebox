@@ -1,7 +1,7 @@
-name             'chef-rbenv_passenger'
-maintainer       'YOUR_COMPANY_NAME'
-maintainer_email 'YOUR_EMAIL'
-license          'All rights reserved'
-description      'Installs/Configures chef-rbenv_passenger'
+name             'rbenv_passenger'
+maintainer       'Zen Kyprianou'
+maintainer_email 'zen@kyprianou.eu'
+license          'MIT'
+description      'Installs rbenv and passenger on nginx'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
 version          '0.1.0'
