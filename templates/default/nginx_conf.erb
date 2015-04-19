@@ -1,0 +1,42 @@
+upstream <%= node[:bakebox][:app][:name] %> {
+  server unix://<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name]) %>/current/tmp/<%= node[:bakebox][:app][:name] %>.sock;
+}
+
+server {
+  listen 80;
+  server_name <%= node[:bakebox][:app][:domain] %>;
+
+  root <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name]) %>/current/public;
+
+  if (-f <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name]) %>/current/public/system/maintenance.html) {
+    return 503;
+  }
+
+  error_page 503 @maintenance;
+  location @maintenance {
+    rewrite  ^(.*)$  /system/maintenance.html last;
+    break;
+  }
+
+  location / {
+    #all requests are sent to the UNIX socket
+    proxy_pass http://<%= node[:bakebox][:app][:name] %>;
+    proxy_redirect     off;
+
+    proxy_set_header   Host             $host:$proxy_port;
+    proxy_set_header   X-Real-IP        $remote_addr;
+    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+
+    client_max_body_size       10m;
+    client_body_buffer_size    128k;
+
+    proxy_connect_timeout      90;
+    proxy_send_timeout         90;
+    proxy_read_timeout         90;
+
+    proxy_buffer_size          4k;
+    proxy_buffers              4 32k;
+    proxy_busy_buffers_size    64k;
+    proxy_temp_file_write_size 64k;
+  }
+}

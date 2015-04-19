@@ -56,3 +56,42 @@ template File.join(app_directory, '.ssh', 'authorized_keys') do
   group node[:bakebox][:app][:name]
   mode 0600
 end
+
+if node[:bakebox][:app][:ssl][:cert].empty?
+  template File.join(node[:bakebox][:app][:nginx][:location], "sites-enabled/#{node[:bakebox][:app][:name]}") do
+    source "nginx_conf.erb"
+    owner 'root'
+    group 'root'
+    mode 0600
+    notifies :reload, 'service[nginx]', :immediately
+  end
+else
+  directory File.join(node[:bakebox][:app][:nginx][:location], 'ssl') do
+    owner 'root'
+    group 'root'
+    mode 0700
+  end
+
+  template File.join(node[:bakebox][:app][:nginx][:location], "ssl/#{node[:bakebox][:app][:domain]}.crt") do
+    source "cert.erb"
+    owner 'root'
+    group 'root'
+    mode 0600
+  end
+
+  fail 'You need to supply the private key to the certificate' if node[:bakebox][:app][:ssl][:key].empty?
+  template File.join(node[:bakebox][:app][:nginx][:location], "ssl/#{node[:bakebox][:app][:domain]}.key") do
+    source "key.erb"
+    owner 'root'
+    group 'root'
+    mode 0600
+  end
+
+  template File.join(node[:bakebox][:app][:nginx][:location], "sites-enabled/#{node[:bakebox][:app][:name]}") do
+    source "nginx_conf_ssl.erb"
+    owner 'root'
+    group 'root'
+    mode 0600
+    notifies :reload, 'service[nginx]', :immediately
+  end
+end
