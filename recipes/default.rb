@@ -50,9 +50,9 @@ directory File.join(app_directory, '.ssh') do
   mode 0700
 end
 
-rbenv_script "passenger-install-nginx-module" do
-  rbenv_version node[:rbenv_passenger][:ruby_version]
-  code <<-BASH
-    passenger-install-nginx-module --auto
-  BASH
+template File.join(app_directory, '.ssh', 'authorized_keys') do
+  source "authorized_keys.erb"
+  owner node[:bakebox][:app][:name]
+  group node[:bakebox][:app][:name]
+  mode 0600
 end
