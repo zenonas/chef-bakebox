@@ -6,8 +6,8 @@ APP_NAME="<%= node[:bakebox][:app][:name] %>"
 APP="<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], 'current') %>"
 USER=<%= node[:bakebox][:app][:name] %>
 SET_PATH="cd $APP"
-START_CMD="$SET_PATH; bundle exec pumactl -F <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], %{shared config puma.rb}) %> start"
-STOP_CMD="$SET_PATH; bundle exec pumactl -F <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], %{shared config puma.rb}) %> stop"
+START_CMD="$SET_PATH; bundle exec pumactl -F <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], 'shared/config/puma.rb') %> start"
+STOP_CMD="$SET_PATH; bundle exec pumactl -F <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], 'shared/config/puma.rb') %> stop"
 
 case "$1" in
   start)

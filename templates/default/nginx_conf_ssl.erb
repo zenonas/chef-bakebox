@@ -5,7 +5,7 @@ server {
 }
 
 upstream <%= node[:bakebox][:app][:name] %> {
-  server unix://<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name]) %>/current/tmp/<%= node[:bakebox][:app][:name] %>.sock;
+  server unix://<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name]) %>/shared/tmp/<%= node[:bakebox][:app][:name] %>.sock;
 }
 
 server {

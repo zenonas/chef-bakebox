@@ -5,6 +5,7 @@ default[:bakebox][:app] = {
     cert: '',
     key: ''
   },
+  config_files: [],
   dir: '/opt',
   ruby: '2.2.2',
   gems: ['bundler'],

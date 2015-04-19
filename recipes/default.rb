@@ -57,7 +57,7 @@ template File.join(app_directory, '.ssh', 'authorized_keys') do
 end
 
 if node[:bakebox][:app][:ssl][:cert].empty?
-  template File.join(node[:bakebox][:app][:nginx][:location], "sites-enabled/#{node[:bakebox][:app][:name]}") do
+  template File.join(node[:bakebox][:nginx][:location], "sites-enabled/#{node[:bakebox][:app][:name]}") do
     source "nginx_conf.erb"
     owner 'root'
     group 'root'
@@ -65,13 +65,13 @@ if node[:bakebox][:app][:ssl][:cert].empty?
     notifies :reload, 'service[nginx]', :immediately
   end
 else
-  directory File.join(node[:bakebox][:app][:nginx][:location], 'ssl') do
+  directory File.join(node[:bakebox][:nginx][:location], 'ssl') do
     owner 'root'
     group 'root'
     mode 0700
   end
 
-  template File.join(node[:bakebox][:app][:nginx][:location], "ssl/#{node[:bakebox][:app][:domain]}.crt") do
+  template File.join(node[:bakebox][:nginx][:location], "ssl/#{node[:bakebox][:app][:domain]}.crt") do
     source "cert.erb"
     owner 'root'
     group 'root'
@@ -79,14 +79,14 @@ else
   end
 
   fail 'You need to supply the private key to the certificate' if node[:bakebox][:app][:ssl][:key].empty?
-  template File.join(node[:bakebox][:app][:nginx][:location], "ssl/#{node[:bakebox][:app][:domain]}.key") do
+  template File.join(node[:bakebox][:nginx][:location], "ssl/#{node[:bakebox][:app][:domain]}.key") do
     source "key.erb"
     owner 'root'
     group 'root'
     mode 0600
   end
 
-  template File.join(node[:bakebox][:app][:nginx][:location], "sites-enabled/#{node[:bakebox][:app][:name]}") do
+  template File.join(node[:bakebox][:nginx][:location], "sites-enabled/#{node[:bakebox][:app][:name]}") do
     source "nginx_conf_ssl.erb"
     owner 'root'
     group 'root'
@@ -114,6 +114,15 @@ template File.join('/etc/sudoers.d/', node[:bakebox][:app][:name]) do
   owner 'root'
   group 'root'
   mode 0400
+end
+
+node[:bakebox][:app][:config_files].each do |config|
+  file File.join(app_directory, "shared/config/#{config[:name]}") do
+    content config[:content]
+    owner node[:bakebox][:app][:name]
+    group node[:bakebox][:app][:name]
+    mode 0644
+  end
 end
 
 service node[:bakebox][:app][:name] do
