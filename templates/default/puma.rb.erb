@@ -1,0 +1,5 @@
+environment '<%= node.chef_environment %>'
+daemonize
+pidfile '<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], %{shared tmp pids #{node[:bakebox][:app][:name]}.pid}) %>'
+state_path '<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], %{shared tmp #{node[:bakebox][:app][:name]}.state}) %>'
+bind 'unix://<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], %{shared tmp #{node[:bakebox][:app][:name]}.sock}) %>'

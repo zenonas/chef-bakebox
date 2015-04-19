@@ -18,8 +18,7 @@ end
 include_recipe "rbenv::default"
 include_recipe "rbenv::ruby_build"
 
-
-%w{shared shared/log shared/tmp shared/config}.each do|dir|
+%w{shared shared/log shared/tmp shared/config shared/tmp/pids}.each do|dir|
   directory File.join(app_directory, dir) do
     owner node[:bakebox][:app][:name]
     group node[:bakebox][:app][:name]
@@ -94,4 +93,23 @@ else
     mode 0600
     notifies :reload, 'service[nginx]', :immediately
   end
+end
+
+template File.join(app_directory, %w{shared config puma.rb}) do
+  source "puma.rb.erb"
+  owner node[:bakebox][:app][:name]
+  group node[:bakebox][:app][:name]
+  mode 0644
+end
+
+template File.join('/etc/init.d/', node[:bakebox][:app][:name]) do
+  source "init.d.erb"
+  owner 'root'
+  group 'root'
+  mode 0755
+end
+
+service node[:bakebox][:app][:name] do
+  supports :start => true, :stop => true, :restart => true
+  action   :enable
 end

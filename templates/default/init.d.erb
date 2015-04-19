@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# description: Puma init.d for <%= node[:bakebox][:app][:name] %>
+
+APP_NAME="<%= node[:bakebox][:app][:name] %>"
+APP="<%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], 'current') %>"
+USER=<%= node[:bakebox][:app][:name] %>
+SET_PATH="cd $APP"
+START_CMD="$SET_PATH; bundle exec pumactl -F <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], %{shared config puma.rb}) %> start"
+STOP_CMD="$SET_PATH; bundle exec pumactl -F <%= File.join(node[:bakebox][:app][:dir], node[:bakebox][:app][:name], %{shared config puma.rb}) %> stop"
+
+case "$1" in
+  start)
+    echo "Starting Puma for $APP_NAME"
+    sudo -iu $USER -- bash -lc "$START_CMD"
+    ;;
+  stop)
+    echo "Stopping Puma for $APP_NAME"
+    sudo -iu $USER -- bash -lc "$STOP_CMD"
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+  *)
+    echo "Usage: $0 start|stop|restart" >&2
+    exit 3
+    ;;
+esac
