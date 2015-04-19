@@ -1,61 +1,71 @@
-chef-rbenv_passenger Cookbook
+Bakebox cookbook
 =============================
-TODO: Enter the cookbook description here.
 
-e.g.
-This cookbook makes your favorite breakfast sandwich.
+Making deploying ruby Rack apps just a little bit easier
 
 Requirements
 ------------
-TODO: List your cookbook requirements. Be sure to include any requirements this cookbook has on platforms, libraries, other cookbooks, packages, operating systems, etc.
 
-e.g.
-#### packages
-- `toaster` - chef-rbenv_passenger needs toaster to brown your bagel.
+## Operating systems
+* ubuntu
+* oel
+* rhel
 
 Attributes
 ----------
-TODO: List your cookbook attributes here.
 
-e.g.
-#### chef-rbenv_passenger::default
-<table>
-  <tr>
-    <th>Key</th>
-    <th>Type</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td><tt>['chef-rbenv_passenger']['bacon']</tt></td>
-    <td>Boolean</td>
-    <td>whether to include bacon</td>
-    <td><tt>true</tt></td>
-  </tr>
-</table>
+## Attributes you must set
+```
+default[:bakebox][:app][:name] = 'dummyapp'
+default[:bakebox][:app][:domain] = 'dummyapp'
+```
+## Optional but worthwhile to override
+
+### SSL (if you override the following parameters Nginx will be configured to use SSL
+```
+default[:bakebox][:app][:ssl][:cert] = '<INSERT CERT HERE>'
+default[:bakebox][:app][:ssl][:key] = '<INSERT PRIVATE KEY HERE>'
+```
+### APP Specific config files
+
+```
+database_yml = {name: 'database.yml', content: '<INSERT CONTENT HERE>'
+default[:bakebox][:app][:config_files] = [database_yml]
+```
+All configs go in /path/to/app/shared/config for Capistrano to symlink
+
+### APP Settings
+
+```
+default[:bakebox][:app][:ruby] = '2.2.2'
+default[:bakebox][:app][:gems] = ['bundler']
+default[:bakebox][:app][:upgrade] = false
+default[:bakebox][:app][:deployers] = {
+  deployer_1: '<SSH PUBLIC KEY GOES HERE>',
+  deployer_2: '<SSH PUBLIC KEY GOES HERE>'
+}
+```
 
 Usage
 -----
-#### chef-rbenv_passenger::default
-TODO: Write usage instructions for each cookbook.
+#### bakebox::default
 
-e.g.
-Just include `chef-rbenv_passenger` in your node's `run_list`:
+Just include `bakebox` in your node's `run_list`:
 
 ```json
 {
   "name":"my_node",
   "run_list": [
-    "recipe[chef-rbenv_passenger]"
+    "recipe[bakebox]"
   ]
 }
 ```
 
+and don't forget to overwrite the required attributes
+
 Contributing
 ------------
-TODO: (optional) If this is a public cookbook, detail the process for contributing. If this is a private cookbook, remove this section.
 
-e.g.
 1. Fork the repository on Github
 2. Create a named feature branch (like `add_component_x`)
 3. Write your change
