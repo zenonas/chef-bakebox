@@ -109,6 +109,13 @@ template File.join('/etc/init.d/', node[:bakebox][:app][:name]) do
   mode 0755
 end
 
+template File.join('/etc/sudoers.d/', node[:bakebox][:app][:name]) do
+  source "sudoers.erb"
+  owner 'root'
+  group 'root'
+  mode 0400
+end
+
 service node[:bakebox][:app][:name] do
   supports :start => true, :stop => true, :restart => true
   action   :enable
