@@ -6,6 +6,14 @@ fail 'Please make sure you define a name for your application at default[:bakebo
 fail 'Please make sure you define a domain for your application at default[:bakebox][:app][:domain]' if node[:bakebox][:app][:domain].empty?
 fail 'Please make sure you add at least one deployer under default[:bakebox][:app][:deployers]' if node[:bakebox][:app][:deployers].empty?
 
+directory node[:bakebox][:app][:dir] do
+  owner 'root'
+  group 'root'
+  mode 0755
+  recursive true
+  action :create
+end
+
 user node[:bakebox][:app][:name] do
   supports manage_home: true
   system true
@@ -28,7 +36,7 @@ include_recipe "rbenv::ruby_build"
   end
 end
 
-include_recipe "nginx::source"
+include_recipe "nginx"
 
 rbenv_ruby node[:bakebox][:app][:ruby]
 
