@@ -36,7 +36,7 @@ include_recipe "rbenv::ruby_build"
   end
 end
 
-include_recipe "nginx"
+include_recipe "nginx::source"
 
 rbenv_ruby node[:bakebox][:app][:ruby]
 

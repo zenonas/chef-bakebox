@@ -14,6 +14,7 @@ default[:bakebox][:app] = {
 }
 
 default[:bakebox][:nginx] = {
+  version: '1.6.3',
   location: '/opt/nginx'
 }
 
@@ -25,3 +26,4 @@ default[:rbenv][:user_home]      = File.join(node[:bakebox][:app][:dir], node[:b
 default[:rbenv][:root_path]      = "#{node[:rbenv][:install_prefix]}/.rbenv"
 default[:nginx][:dir]            = node[:bakebox][:nginx][:location]
 default[:nginx][:log_dir]        = File.join(node[:bakebox][:nginx][:location], 'log')
+default[:nginx][:version]        = node[:bakebox][:nginx][:version]
